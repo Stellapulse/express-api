@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { findByEmail , findByContactNumber , createUser , findAuthUserByEmail } = require('../repository/user.repository');
+const { generateAccessToken } = require('../utils/jwt');
 
 const register = async({ name, email, password, contact_no }) => {
 
@@ -42,11 +43,15 @@ const login = async ({ email , password }) => {
     if(!isMatch){
         throw new Error('Invalid email or password ');
     }
-
+    
+    const accessToken = generateAccessToken(existing.user_id);
     
     return {
-        user_id:existing.user_id,
-        email:existing.email
+        accessToken,
+        user:{
+            user_id : existing.user_id,
+            email: existing.email
+        }
     };
    
 };
