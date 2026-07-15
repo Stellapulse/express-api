@@ -13,6 +13,7 @@ router.post(
     validate(registerSchema),
     userController.register
 );
+
 router.post(
     "/login",
     validate(loginSchema),

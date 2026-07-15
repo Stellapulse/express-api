@@ -1,30 +1,24 @@
 const { verifyAccessToken } = require('../utils/jwt');
+const ApiError = require('../utils/ApiError')
 const authenticate = (req,res,next) =>{
     try{
         const authHeader = req.headers['authorization'];
-
-        if(!authHeader || !authHeader.startsWith('Bearer ')){
-            return res.status(401).json(
-                {
-                    message:" Unauthorized Access!"
-                }
-            );
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return next(new ApiError(401, "Authorization token missing"));
         }
 
         const token = authHeader.split(' ')[1];
     
         const payLoad = verifyAccessToken(token);
         
-    
         req.user=payLoad;
+        next();
+        
     } catch(error) {
-        return next(error)
+        return next(
+            new ApiError(401,"Invalid or Expired Token")
+        ); 
     }
-
-
-
-
-    next();
 
 };
 

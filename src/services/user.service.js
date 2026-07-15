@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { findByEmail , findByContactNumber , createUser , findAuthUserByEmail } = require('../repository/user.repository');
 const { generateAccessToken } = require('../utils/jwt');
+const ApiError = require('../utils/ApiError');
 
 const register = async({ name, email, password, contact_no }) => {
 
@@ -10,11 +11,11 @@ const register = async({ name, email, password, contact_no }) => {
     ]); 
 
     if (existingEmail) {
-        throw new Error("Email already exists");
+        throw new ApiError(409,"Email already exists");
     }
 
     if (existingContactNumber) {
-        throw new Error("Contact number already exists");
+        throw new ApiError(409,"Contact number already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,11 +38,11 @@ const login = async ({ email , password }) => {
 
     const existing = await findAuthUserByEmail(email);
     
-    if(!existing) throw new Error('Invalid email or password');
+    if(!existing) throw new Error(401,'Invalid email or password');
     
     const isMatch = await bcrypt.compare(password,existing.password_hash);
     if(!isMatch){
-        throw new Error('Invalid email or password ');
+        throw new ApiError(401,'Invalid email or password ');
     }
     
     const accessToken = generateAccessToken(existing.user_id);

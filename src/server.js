@@ -14,9 +14,11 @@ console.log({
 const express = require('express');
 const app = express();
 const routes = require("./routes/index")
+const errorHandler = require('./middlewares/errorHandler.middleware');
 
 app.use(express.json());
 app.use('/api',routes);
+app.use(errorHandler);
 
 const pool = require("./config/db");
 
