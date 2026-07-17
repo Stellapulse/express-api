@@ -26,8 +26,19 @@ const login = asyncHandler(async(req,res, next) => {
 
 });
 
+const profile = asyncHandler(async (req,res,next) => {
+    console.log(req.user.user_id);
+    const user = await userService.profile(req.user.user_id);
+
+    return res.status(200).json({
+        success: true,
+        message :" Profile fetched Successfully",
+        data:user
+    })
+})
 
 module.exports = {
     register,
-    login
+    login,
+    profile
 };

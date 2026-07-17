@@ -55,9 +55,21 @@ const createUser = async({name,email,password,contact_no}) => {
 
 };
 
+const fetchProfile = async (user_id) => {
+    const result = await pool.query(`
+        SELECT name,email,contact_no
+        FROM users
+        WHERE user_id = $1`,
+        [user_id]
+    );
+
+    return result.rows[0];
+}
+
 module.exports = {
     findByEmail,
     findByContactNumber,
     createUser,
-    findAuthUserByEmail
+    findAuthUserByEmail,
+    fetchProfile
 };

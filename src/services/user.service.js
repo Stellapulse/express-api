@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { findByEmail , findByContactNumber , createUser , findAuthUserByEmail } = require('../repository/user.repository');
+const { findByEmail , findByContactNumber , createUser , findAuthUserByEmail , fetchProfile } = require('../repository/user.repository');
 const { generateAccessToken } = require('../utils/jwt');
 const ApiError = require('../utils/ApiError');
 
@@ -38,7 +38,7 @@ const login = async ({ email , password }) => {
 
     const existing = await findAuthUserByEmail(email);
     
-    if(!existing) throw new Error(401,'Invalid email or password');
+    if(!existing) throw new ApiError(401,'Invalid email or password');
     
     const isMatch = await bcrypt.compare(password,existing.password_hash);
     if(!isMatch){
@@ -57,7 +57,19 @@ const login = async ({ email , password }) => {
    
 };
 
+//Profile Service
+
+const profile = async(user_id) => {
+    try {
+        const profile = await fetchProfile(user_id);
+        return profile;
+    } catch(error) {
+        throw new ApiError();
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    profile
 };

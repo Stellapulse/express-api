@@ -22,7 +22,8 @@ router.post(
 
 router.get(
     "/profile",
-    authenticate
+    authenticate,
+    userController.profile
 )
 
 module.exports = router;
